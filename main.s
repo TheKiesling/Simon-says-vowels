@@ -131,7 +131,20 @@ print_vowels:
 	ldr		r0,=delayMs 			// Se carga el valor del delay en la etiqueta
 	ldr		r0,[r0]
 	bl		delay  					// Se realiza el delay para poder visualizar el output
-
+	
+	mov r9, #0						// Se resetea el valor de r9 para iterar en la impresion
+	ldr r0, =newline				// impresion de nueva linea
+	bl puts
+	
+	print:
+		ldr		r8,=vowels			// cargar arreglo de vocales
+		ldr 	r1,[r8,r9]			// cargar vocal correspondiente
+		ldr 	r0,=formatoc		
+		bl 		printf				// imprimir vocal
+		add 	r9,#1				// incrementar la posicion en el arreglo
+		cmp 	r9,r7				// compara si existen elementos siguientes en el arreglo
+		ble 	print
+		
 	mov		r9,#0 					// prepara contador para reset
 	mov 	r5,#7 					// prepara cantidad de pines para reset
 	add 	r7,#1					// añade 1 a registro acumulador
@@ -189,10 +202,12 @@ u: 			.word 	31,33,35,36,37
 pinOutput:	.word 	29,31,33,35,36,37,38
 pinInput: 	.word 	16,18
 delayMs:	.int	1000
-delay2:	.int	100
+delay2:		.int	100
 OUTPUT		=		1	
 INPUT		=		0
 vowels:		.byte   ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
 
 /* --- Mensajes --- */
 ErrMsg:	 .asciz	"Setup didn't work... Aborting...\n"
+formatoc: .asciz " %c"
+newline: .asciz "\n"
