@@ -8,19 +8,35 @@
 * Jose Pablo Kiesling Lange 21581
 * -------------------------------
 * gen_random.s
-* Genera numeros random dependiendo del intervalo que se requiera
+* Genera una vocal random y la retorna
  -------------------------------------------------------------------------------------- */
 
 .global _rnd
+/* rnd: genera una vocal random mediante el tiempo de la computadora
+    - sin parametros -
+    - salida: r0 (vocal)
+*/
 _rnd:
-    mov r6,#1000                //Establece el intervalo en donde se desean los numeros
-    push {lr}	
-    MOV R0, #0                  //Setea 0 en R0
-    BL time                     //Obtiene el tiempo de la computadora (inicia desde el 01/01/1970)
-    MOV R1, R0                  //Asigna a r1 la semilla
-    BL srand                    //Genera la funcion random
-    randomgen:       
-        BL rand                 //Obtiene el random
-        cmp r0,r6               //Compara si esta dentro del intervalo que se desea
-        bgt randomgen           //De no estarlo, vuelve a generar otro      
-    pop {pc}    
+    push    {lr}	
+    mov     r0, #0                      // Setea 0 en r0
+    bl      time                        // Obtiene el tiempo de la computadora (inicia desde el 01/01/1970)
+    mov     r6,r0                       // Se obtiene el tiempo
+    mov     r2,#5                       // Se necesita el resto de 5, porque son 5 opciones
+
+    mod:                                // Genera el resto
+        sub     r6,r2
+        cmp     r6,#5
+        bge     mod                     // Si se puede seguir diviendo
+
+    cmp     r6,#0           // Letra A
+    moveq 	r0,#'a'					
+    cmp 	r6,#1           // Letra E
+    moveq 	r0,#'e'					
+    cmp 	r6,#2    		// Letra I
+    moveq 	r0,#'i'
+    cmp 	r6,#3			// Letra O
+    moveq 	r0,#'o'
+    cmp 	r6,#4 			// Letra U
+    moveq 	r0,#'u'
+
+    pop {pc} 
